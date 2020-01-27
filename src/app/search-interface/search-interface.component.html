@@ -1,0 +1,65 @@
+
+<div class="top"> 
+        <h1>IMDB TC</h1>
+        <h2>Search: </h2>
+        <form [formGroup] = "rForm">
+                <input type="text" formArrayName ="title" [formControl]="queryField" placeholder="Search Movies ..." (keyup.enter)="search()">
+                <div class="sidenav" >
+                        <p> Categories:  </p>
+                        <label
+                                formArrayName="categories"
+                                *ngFor="let category of rForm.controls.categories.controls; let i = index"
+                                >
+                                <p> <b>{{categories[i]}}  </b> <input type="checkbox" [formControl]="category" (change)="filter()"/>  </p>
+                        </label>
+                </div>
+        </form>
+<div class="main">
+        <!-- <div *ngFor="let item of autolist" class="autocomplete">
+                <button>
+                                <p> <b> {{item.title}}</b>  </p>
+                </button>
+                
+        </div> -->
+        <div *ngIf="results; else all" >
+                        <div *ngFor="let result of results; let i = index; ">
+                                <button class="moviedetail">
+                                        <p><b>Sno :</b> {{i+1}}</p>
+                                        <p><b>Title :</b> {{result.title}}</p>
+                                        <p *ngIf="result.year"><b>Year: </b>{{result.year}}</p>
+                                        <p *ngIf="result.rating"><b>Rating :</b> {{result.rating}}</p>
+                                        <p *ngIf="result.genre"><b>Genre: </b>{{result.genre}}</p>
+                                </button>
+                        </div>
+        </div> 
+        <ng-template #all>
+                        <div *ngFor = "let movie of movies; let i = index;">
+
+                                                <button class="moviedetail">
+                                                <p><b>Sno :</b> {{i+1}}</p>
+                                                <p><b>Title :</b> {{movie.title}}</p>
+                                                <p><b>Year: </b>{{movie.year}}</p>
+                                                <p><b>Rating :</b> {{movie.rating}}</p>
+                                                <p><b>Genre: </b>{{movie.genre}}</p>
+                                                </button>
+                        </div>
+        </ng-template>
+</div>
+
+
+                <div 
+    infinite-scroll
+    [infiniteScrollDistance]="scrollDistance"
+    [infiniteScrollUpDistance]="scrollUpDistance"
+    [infiniteScrollThrottle]="throttle"
+    (scrolled)="onScrollDown()">
+</div>
+</div>
+
+
+<!-- <div class="sidenav" >
+        <p> Categories:  </p>
+        <div *ngFor = "let category of categories">
+                <p><b><input type="checkbox" /></b> {{category}} </p>
+        </div>
+</div> -->
