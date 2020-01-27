@@ -1,11 +1,7 @@
-import { FormArray, FormControl } from '@angular/forms';
 
-import { Movie } from './movie';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
-import { SearchInterfaceComponent } from './search-interface/search-interface.component';
 @Injectable()
 export class SearchService {
   baseUrl1: string = 'https://movie-search-project.herokuapp.com/elastic/search/';
@@ -44,12 +40,6 @@ export class SearchService {
     this.categoryList = '';
     console.log(categories,categories[0], 'these are the values');
     console.log(data)
-    // categories.valueChanges.subscribe(response =>{
-    //   console.log('response:',response);
-    //   categories = response;
-    //   categories.setControl(0, new FormControl(true));
-    //   console.log(categories,'after setting');
-    // });
     for(let i = 0; i < categories.length; i++ ){
         if (categories[i] == true)
         {

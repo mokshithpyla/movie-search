@@ -1,18 +1,32 @@
 <div class="main">
-        <!-- <div *ngFor = "let movie of movies">
-                <div class="moviedetail">
-                        <p><b>Title :</b> {{movie.title}}</p>
-                        <p><b>Year: </b>{{movie.year}}</p>
-                        <p><b>Rating :</b> {{movie.rating}}</p>
-                        <p><b>Genre: </b>{{movie.genre}}</p>
+        <div *ngIf="results; else all" >
+                <div *ngFor="let result of results; let i = index; | async">
+                        <button class="moviedetail">
+                                <p><b>Sno :</b> {{i+1}}</p>
+                                <p><b>Title :</b> {{result.title}}</p>
+                                <p *ngIf="result.year"><b>Year: </b>{{result.year}}</p>
+                                <p *ngIf="result.rating"><b>Rating :</b> {{result.rating}}</p>
+                                <p *ngIf="result.genre"><b>Genre: </b>{{result.genre}}</p>
+                        </button>
                 </div>
-        </div> -->
-        <!-- <div 
-            infinite-scroll
-            [infiniteScrollDistance]="scrollDistance"
-            [infiniteScrollUpDistance]="scrollUpDistance"
-            [infiniteScrollThrottle]="throttle"
-            (scrolled)="onScrollDown()">
-        </div> -->
+        </div> 
+        <ng-template #all>
+                        <div *ngFor = "let movie of movies; let i = index; | async">
+
+                                                <button class="moviedetail">
+                                                <p><b>Sno :</b> {{i+1}}</p>
+                                                <p><b>Title :</b> {{movie.title}}</p>
+                                                <p><b>Year: </b>{{movie.year}}</p>
+                                                <p><b>Rating :</b> {{movie.rating}}</p>
+                                                <p><b>Genre: </b>{{movie.genre}}</p>
+                                                </button>
+                        </div>
+        </ng-template>
+</div>   
+<div 
+        infinite-scroll
+        [infiniteScrollDistance]="scrollDistance"
+        [infiniteScrollUpDistance]="scrollUpDistance"
+        [infiniteScrollThrottle]="throttle"
+        (scrolled)="onScrollDown()">
 </div>
-    

@@ -1,12 +1,13 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Movie } from './../movie';
-import { FormControl, FormGroup, FormBuilder, FormArray, Form } from '@angular/forms';
-import { Observable} from 'rxjs';
+import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { SearchService } from './../search.service';
 import { DataService } from './../data.service';
 import { Component, OnInit } from '@angular/core';
 import * as _ from "lodash";
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-interface',
@@ -20,18 +21,12 @@ export class SearchInterfaceComponent implements OnInit {
   postUrl2: string = "https://movie-search-project.herokuapp.com/";
   postUrl3: string = "https://movie-search-project.herokuapp.com/elastic/search/?g="
   results: Object;
-  autolist: Object;
   movies$: Observable<Movie[]>;
   movies: Movie[];
 
   rForm: FormGroup;
   queryField: FormControl = new FormControl();
 
-  // Infinite scroll parameters:
-  throttle = 300;
-  scrollDistance = 1;
-  scrollUpDistance = 2;
-  direction = '';
 
 
   categoryList: string;
@@ -47,20 +42,14 @@ export class SearchInterfaceComponent implements OnInit {
   ngOnInit() {
     this.getMovieData(this.postUrl1, this.movies);
     this.getCategoriesData(this.postUrl2);
-    this.queryField.valueChanges
-      .subscribe(queryField => this.searchService.suggest(queryField)
-        .toPromise().then(response => {
-          this.results = response;
-          console.log(this.results, 'what')
-        }));
-    this.queryField.valueChanges.subscribe(value => console.log(value));
-    console.log(this.results, 'this');
-    this.queryField.valueChanges
-      .subscribe(queryField => this.searchService.autocomplete(queryField)
-        .toPromise().then(response => {
-          this.autolist = response;
-          console.log(this.autolist, 'auto')
-        }));
+    this.queryField.valueChanges.pipe(
+      // debounceTime(500),
+      switchMap(searchTerm => this.searchService.suggest(searchTerm)),
+      distinctUntilChanged())
+    .subscribe(response => {
+      this.results = response;
+      console.log(this.results, 'what');
+    });
   }
 
   getCategoriesData(url: string) {
@@ -88,16 +77,12 @@ export class SearchInterfaceComponent implements OnInit {
     });
   }
   setCategories() {
-    this.categories.forEach((o, i) => {
+    this.categories.forEach(() => {
       const control = new FormControl(false);
       (this.rForm.controls.categories as FormArray).push(control);
     });
   }
-  onScrollDown(ev) {
-    console.log('scrolled down!!', ev);
-    this.getMovieData(this.postUrl1, this.movies);
-    this.direction = 'down';
-  }
+
   search() {
     console.log(this.queryField.value, 'searchterm');
     this.searchService.search(this.queryField.value).subscribe(results => {
@@ -106,11 +91,11 @@ export class SearchInterfaceComponent implements OnInit {
     // this.results = this.searchService.search(term)
     console.log(this.results, 'sr')
   }
-  filter(){
+  filter() {
     console.log(this.rForm.controls.categories, 'cats');
     this.selectedCategories = _.map(
       this.rForm.controls.categories["controls"],
-      (category, i) =>{
+      (category, i) => {
         return category.value;
       }
     )
@@ -118,7 +103,7 @@ export class SearchInterfaceComponent implements OnInit {
     console.log(this.rForm.value.categories, 'catsvalues');
     this.categoryList = this.searchService.filter(this.selectedCategories, this.categories)
     console.log(this.categoryList)
-    this.http.get(this.postUrl3 + this.categoryList.toLowerCase()).subscribe(response => {  
+    this.http.get(this.postUrl3 + this.categoryList.toLowerCase()).subscribe(response => {
       this.results = response;
     }
     );
