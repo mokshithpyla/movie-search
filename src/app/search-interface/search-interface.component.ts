@@ -91,6 +91,9 @@ export class SearchInterfaceComponent implements OnInit {
     // this.results = this.searchService.search(term)
     console.log(this.results, 'sr')
   }
+  getControls() {
+    return (this.rForm.get('categories') as FormArray).controls;
+  }
   filter() {
     console.log(this.rForm.controls.categories, 'cats');
     this.selectedCategories = _.map(

@@ -16,7 +16,7 @@ export class ListComponent implements OnInit {
   scrollDistance = 1;
   scrollUpDistance = 2;
   direction = '';
-
+  ev: any
   postUrl1 : string = "https://movie-search-project.herokuapp.com/movie/";
   constructor(private dataService:DataService, private sic: SearchInterfaceComponent) { }
 

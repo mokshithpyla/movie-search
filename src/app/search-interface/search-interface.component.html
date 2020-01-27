@@ -8,7 +8,7 @@
                         <p> Categories:  </p>
                         <label
                                 formArrayName="categories"
-                                *ngFor="let category of rForm.controls.categories.controls; let i = index"
+                                *ngFor="let category of getControls(); let i = index"
                                 >
                                 <p> <b>{{categories[i]}}  </b> <input type="checkbox" [formControl]="category" (change)="filter()"/>  </p>
                         </label>
