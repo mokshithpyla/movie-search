@@ -16,10 +16,10 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getMovieData(url: string) {
-    return this.http.get<any>(url);
+    return this.http.get(url);
   }
 
   getCategoriesData(url: string) {
-    return this.http.get<any>(url);
+    return this.http.get(url);
   }
 }

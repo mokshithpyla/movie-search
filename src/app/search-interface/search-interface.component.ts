@@ -20,6 +20,7 @@ export class SearchInterfaceComponent implements OnInit {
   postUrl1: string = "https://movie-search-project.herokuapp.com/movie/";
   postUrl2: string = "https://movie-search-project.herokuapp.com/";
   postUrl3: string = "https://movie-search-project.herokuapp.com/elastic/search/?g="
+  nextUrl: string;
   results: Object;
   movies$: Observable<Movie[]>;
   movies: Movie[];
@@ -53,25 +54,28 @@ export class SearchInterfaceComponent implements OnInit {
   }
 
   getCategoriesData(url: string) {
-    this.dataService.getCategoriesData(url).toPromise().then(response => {
+    this.dataService.getCategoriesData(url).subscribe(response => {
       this.categories = response['categories'];
       this.setCategories();
       console.log(this.rForm.get('categories'), 'categories here')
     });
   }
   getMovieData(url: string, movies: any) {
-    this.dataService.getMovieData(url).toPromise().then(response => {
+    this.dataService.getMovieData(url).subscribe(response => {
       // console.log(response['next']);
-      // console.log(this.movies);
+      console.log(this.movies);
       if (this.movies == undefined) { this.movies = response['results']; }
       else { this.movies = this.movies.concat(response['results']) }
       // console.log(this.movies);
       if (response['next'] != null) {
         // console.log('more')
-        this.getMovieData(response['next'], this.movies);
+        // this.getMovieData(response['next'], this.movies);
+        this.nextUrl = response['next'];
       }
       else {
-        // console.log('End');
+        console.log('End');
+        // this.getMovieData(url, this.movies);
+        this.nextUrl = this.postUrl1;
         return this.movies;
       }
     });
